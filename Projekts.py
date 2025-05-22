@@ -1,45 +1,52 @@
 import requests
 from bs4 import BeautifulSoup
 
-# Temu Lightning Deals URL
 url = "https://www.temu.com/lv-en/channel/lightning-deals.html"
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Referer': 'https://www.temu.com/'
 }
 
-response = requests.get(url, headers=headers)
-cheap_items = []
-
-if response.status_code == 200:
+try:
+    response = requests.get(url, headers=headers, timeout=10)
+    response.raise_for_status()
+    
     soup = BeautifulSoup(response.content, 'html.parser')
-    
-    # Find product containers - adjust class based on actual structure
-    products = soup.find_all('div', class_='product-item')  # Update class name
-    
+    cheap_items = []
+
+    products = soup.find_all('div', class_=lambda x: x and 'product-item' in x.lower())
+    print(soup.prettify())
+    print("Number of product divs found:", len(products))
     for product in products:
-        name_tag = product.find('h3', class_='product-name')  # Update class
-        price_tag = product.find('span', class_='current-price')  # Update class
-        
-        if name_tag and price_tag:
-            name = name_tag.text.strip()
-            price_str = price_tag.text.strip()
+        try:
+            # Product name
+            name = product.find('h3', class_="_2BvQbnbN").text.strip()
             
-            # Clean price (remove currency symbol and commas)
-            try:
-                price = float(price_str.replace('€', '').replace(',', '').strip())
-            except ValueError:
-                continue
+            # Price components
+            integer_part = product.find('span', class_='_2de9ERAH').text.strip()
+            decimal_part = product.find('span', class_='_3SrxhhHh').text.strip().replace(',', '.')
+            
+            # Combine price parts with a decimal point
+            full_price = f"{integer_part}.{decimal_part}"
+            price = float(full_price)
             
             if price < 10.0:
                 cheap_items.append({
                     'name': name,
-                    'price': price
+                    'price': f"€{price:.2f}"
                 })
+        except AttributeError:
+            continue  # Skip products with missing price components
+        except ValueError:
+            continue  # Skip products with invalid price format
 
-    # Print results
-    print(f"Found {len(cheap_items)} items under €10:")
-    for item in cheap_items:
-        print(f"{item['name']} - €{item['price']:.2f}")
-else:
-    print("Failed to fetch page")
+    print(f"\nFound {len(cheap_items)} items under €10:")
+    for idx, item in enumerate(cheap_items, 1):
+        print(f"{idx}. {item['name']} - {item['price']}")
+
+except requests.exceptions.RequestException as e:
+    print(f"Request failed: {e}")
+except Exception as e:
+    print(f"Error: {e}")
