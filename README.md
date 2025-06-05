@@ -3,6 +3,7 @@
 Šī Python programma automātiski ievāc produktu informāciju no AliExpress tīmekļa veikala, atlasa tikai produktus, kuru cena nepārsniedz 10 eiro, un saglabā šos datus SQLite datubāzē. Tā ir lietderīga rīks pircējiem, kas meklē izdevīgus pirkumus, vai pētniekiem, kas analizē e-komercijas tendences.
 
 Kā tas strādā?
+
 Meklēšanas process:
 * Programma izmanto Selenium tīmekļa pārlūku, lai piekļūtu AliExpress
 * Dinamiski ielādē meklēšanas rezultātus (piemēram, "telefona aksesuāri")
