@@ -16,6 +16,7 @@ Datu iegūšana:
 * Atlasa tikai produktus līdz 10.00 €
 
 Datu glabāšana:
+
 Izveido SQLite datubāzi aliexpress_products.db
 Saglabā produktus struktūrētā tabulā:
 * Nosaukums
@@ -23,9 +24,11 @@ Saglabā produktus struktūrētā tabulā:
 * Saite uz produktu
 
 Tehniskās prasības
+
 Obligātās bibliotēkas:
 bash
 pip install selenium webdriver-manager sqlite3
+
 Sistēmas prasības:
 * Python 3.7 vai jaunāks
 * Google Chrome pārlūks
