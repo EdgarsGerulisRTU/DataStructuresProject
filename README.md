@@ -34,7 +34,7 @@ Kā lietot programmu?
 Instalācija:
 bash
 # 1. Lejupielādēt programmas failu
-git clone https://github.com/EdgarsGerulisRTU/aliexpress-scraper.git
+git clone https://github.com/EdgarsGerulisRTU/DataStructuresProject.git
 
 # 2. Pāriet projekta mapē
 cd aliexpress-scraper
